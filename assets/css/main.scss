@@ -1,0 +1,18 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+body {
+    background-color: #211f1f;
+}
+.app {
+    color: #fff;
+  background-color: #211f1f;
+  min-height: 100vh;
+}
+.wrap {
+    width: 1200px;
+    margin:0 auto;
+}
