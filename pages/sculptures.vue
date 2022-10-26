@@ -24,6 +24,11 @@ export default {
       sculpture: [],
     }
   },
+  async fetch() {
+    await this.getSculptures()
+    this.isLoading = true
+
+  },
 
   methods: {
     async getSculptures() {
@@ -43,12 +48,10 @@ export default {
           this.sculpture.push(res.data)
         })
       )
+
     },
   },
-  async created() {
-    await this.getSculptures()
-    this.isLoading = true
-  },
+
 }
 </script>
 

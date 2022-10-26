@@ -1,6 +1,6 @@
 <template>
   <div v-if="isLoading" class="home d-flex p10">
-    <div class="itemCard" v-for="c in sculpture" :key="c.objectID">
+    <div class="itemCard" v-for="c in paintings" :key="c.objectID">
       <p class="title">{{ c.title }}</p>
       <div class="cardImg">
         <img :src="c.primaryImageSmall" alt="" />
@@ -19,17 +19,21 @@ export default {
     return {
       isLoading: false,
       pictures: [],
-      sculpturesIds: [],
-      sculpture: [],
+      paintingsIds: [],
+      paintings: [],
     }
   },
+  async fetch() {
+    await this.getPaintings()
+    this.isLoading = true
+  },
   methods: {
-    async getSculptures() {
+    async getPaintings() {
       const { data } = await axios.get(
         'https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&isHighlight=true&q=painting'
       )
-      this.sculpturesIds.push(data.objectIDs)
-      const res = await this.sculpturesIds[0]
+      this.paintingsIds.push(data.objectIDs)
+      const res = await this.paintingsIds[0]
         .slice(40, 80)
         .map((id) =>
           axios.get(
@@ -38,14 +42,10 @@ export default {
         )
       Promise.all(res).then((res) =>
         res.forEach((res) => {
-          this.sculpture.push(res.data)
+          this.paintings.push(res.data)
         })
       )
     },
-  },
-  async created() {
-    await this.getSculptures()
-    this.isLoading = true
   },
 }
 </script>
