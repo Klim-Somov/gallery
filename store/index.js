@@ -39,10 +39,24 @@ export const mutations = {
 }
 
 export const actions = {
-  async getArtsFromApi({ commit }) {
+  async getArtsFromApi({ commit, state }) {
     const { data } = await axios.get(
       'https://collectionapi.metmuseum.org/public/collection/v1/search?dateBegin=1700&dateEnd=1800&hasImages=true&q=pictures'
     )
     commit('setIds', data.objectIDs)
+    const res = await state.artsIds
+      .slice(0, 30)
+      .map((id) =>
+        axios.get(
+          `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`
+        )
+      )
+    const resArr = []
+    await Promise.all(res).then((res) =>
+      res.forEach((res) => {
+        resArr.push(res.data)
+      })
+    )
+    commit('setArts', resArr)
   },
 }

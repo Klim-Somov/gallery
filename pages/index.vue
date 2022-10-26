@@ -45,7 +45,6 @@ export default {
         { name: 'Все', value: 'Все' },
       ],
       artsIds: [],
-      arts: [],
       sorted: [],
     }
   },
@@ -56,6 +55,9 @@ export default {
       } else {
         return this.arts
       }
+    },
+    arts() {
+      return this.$store.getters.getArts
     },
   },
   methods: {
@@ -100,30 +102,10 @@ export default {
       this.selectedCategory = option
       this.sortArtsByCat()
     },
-    async getArts() {
-      const { data } = await axios.get(
-        'https://collectionapi.metmuseum.org/public/collection/v1/search?dateBegin=1700&dateEnd=1800&hasImages=true&q=pictures'
-      )
-      this.artsIds.push(data.objectIDs)
-      const res = await this.artsIds[0]
-        .slice(0, 60)
-        .map((id) =>
-          axios.get(
-            `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`
-          )
-        )
-      Promise.all(res).then((res) =>
-        res.forEach((res) => {
-          this.arts.push(res.data)
-        })
-      )
-    },
   },
   async created() {
-    await this.getArts()
-    this.isLoading = true
     await this.$store.dispatch('getArtsFromApi')
-    console.log(this.$store.getters.getArts)
+    this.isLoading = true
   },
 }
 </script>
